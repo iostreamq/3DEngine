@@ -1,18 +1,17 @@
 #include "3DEngineCore/Window.hpp"
 #include "3DEngineCore/Log.hpp"
+#include "3DEngineCore/Event.hpp"
 #include "glad/glad.h"
 
 bool Engine::Window::is_GLFW_initialized = false;
 Engine::Window::Window(unsigned int&& width, unsigned int&& height, const char* title)
 	:  m_window(nullptr)
-     , m_width(std::move(width))
-     , m_height(std::move(height))
-     , m_title(title)
+    , data({ std::move(width), std::move(height), title })
 {}
 
 int Engine::Window::createWindow()
 {
-    LOG_INFO("Creating window {0} width size {1}x{2}", m_title, m_width, m_height);
+    LOG_INFO("Creating window {0} width size {1}x{2}", data.m_title, data.m_width, data.m_height);
     /* Initialize the library */
     if (!glfwInit())
     {
@@ -22,12 +21,31 @@ int Engine::Window::createWindow()
     }
     else { LOG_INFO("GLFW intiliazed"); is_GLFW_initialized = true; }
      
-   m_window = glfwCreateWindow(m_width, m_height, m_title.c_str(), NULL, NULL);
+   m_window = glfwCreateWindow(data.m_width, data.m_height, data.m_title.c_str(), NULL, NULL);
     if (!m_window)
     {
         glfwTerminate();
         return -1;
     }
+        
+    glfwSetWindowUserPointer(m_window, &data);
+    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window,int width, int height)
+        {
+            auto& winData = *static_cast<Data*>(glfwGetWindowUserPointer(window));
+            winData.m_height = height;
+            winData.m_width = width;
+
+            const EventWindowResized eventWindowResized(width, height);
+            winData.eventCallback(eventWindowResized);
+        });
+
+    glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
+        {
+            auto& winData = *static_cast<Data*>(glfwGetWindowUserPointer(window));
+            const EventWindowClose eventWindowClose;
+            winData.eventCallback(eventWindowClose);
+        });
+   
         makeContext();
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

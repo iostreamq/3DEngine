@@ -20,6 +20,25 @@ namespace Engine
         m_window = std::make_unique<Window>(std::move(window_width), std::move(window_height), title);
         m_window->createWindow();
      
+        m_eventDispatcher.addListener<EventWindowResized>([](const EventWindowResized& event)
+            {
+                LOG_INFO("Window Size {}x{}", event.getWidth(), event.getHeight());
+            }
+        );
+
+        m_eventDispatcher.addListener<EventWindowClose>([&](const EventWindowClose& event)
+            {
+                LOG_INFO("Window closed!");
+                m_window->shutDown();
+            }
+        );
+
+        m_window->setEventCallback([&](const BaseEvent& event)
+            {
+                m_eventDispatcher.dispatch(event);
+            }
+        );
+
         while (true)
         {
             m_window->on_update();

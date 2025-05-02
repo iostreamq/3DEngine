@@ -1,5 +1,6 @@
 #pragma once
 #include<memory>
+#include"3DEngineCore/Event.hpp"
 
 namespace Engine{
 	class Window;
@@ -21,5 +22,6 @@ namespace Engine{
 	  
 	private:
 		std::unique_ptr<Window> m_window; //// без юника не робэ
+		EventsDispatcher m_eventDispatcher;
 	};
 }
