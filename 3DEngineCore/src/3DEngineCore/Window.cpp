@@ -1,10 +1,10 @@
-#include <imgui/imgui.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
 #include "3DEngineCore/Window.hpp"
 #include "3DEngineCore/Log.hpp"
 #include "3DEngineCore/Event.hpp"
 #include "glad/glad.h"
-
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <imgui/backends/imgui_impl_glfw.h>
 
 bool Engine::Window::is_GLFW_initialized = false;
 Engine::Window::Window(unsigned int&& width, unsigned int&& height, const char* title)
@@ -60,8 +60,7 @@ int Engine::Window::createWindow()
         IMGUI_CHECKVERSION();
         ImGui::CreateContext(); 
         ImGui_ImplOpenGL3_Init();
-
-        glClearColor(0, 1, 1, 0);
+        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
         return 0;
 
 }
@@ -92,6 +91,7 @@ void Engine::Window::shutDown()
 
 void Engine::Window::on_update()
 {   
+        glClearColor(m_backGroundColor[0], m_backGroundColor[1], m_backGroundColor[2], m_backGroundColor[3]);
         glClear(GL_COLOR_BUFFER_BIT);
 
       
@@ -99,8 +99,15 @@ void Engine::Window::on_update()
         io.DisplaySize.x = static_cast<float>(getWidth());
         io.DisplaySize.y = static_cast<float>(getHeight());
         ImGui_ImplOpenGL3_NewFrame();//начинаем новый фрейм для отрисовки где имгуи рисует
+        ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();// кадр самого имгуи
         ImGui::ShowDemoWindow(); // отрисовывает демо окно чтобы увидеть возможности имгуи
+        
+        ImGui::Begin("BackGround Color Window");
+        ImGui::ColorEdit4("BackGround Color", m_backGroundColor);
+        ImGui::End();
+
+
         ImGui::Render();// создает данные
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());//рисует посредством опенгл
 
