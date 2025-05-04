@@ -1,7 +1,10 @@
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 #include "3DEngineCore/Window.hpp"
 #include "3DEngineCore/Log.hpp"
 #include "3DEngineCore/Event.hpp"
 #include "glad/glad.h"
+
 
 bool Engine::Window::is_GLFW_initialized = false;
 Engine::Window::Window(unsigned int&& width, unsigned int&& height, const char* title)
@@ -30,7 +33,7 @@ int Engine::Window::createWindow()
         
     glfwSetWindowUserPointer(m_window, &data);
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window,int width, int height)
-        {
+        {   
             auto& winData = *static_cast<Data*>(glfwGetWindowUserPointer(window));
             winData.m_height = height;
             winData.m_width = width;
@@ -53,6 +56,11 @@ int Engine::Window::createWindow()
             LOG_CRIT("Failed to initializied GLAD");
             return 0;
         }
+
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext(); 
+        ImGui_ImplOpenGL3_Init();
+
         glClearColor(0, 1, 1, 0);
         return 0;
 
@@ -85,6 +93,17 @@ void Engine::Window::shutDown()
 void Engine::Window::on_update()
 {   
         glClear(GL_COLOR_BUFFER_BIT);
+
+      
+        ImGuiIO& io = ImGui::GetIO(); // получили handle
+        io.DisplaySize.x = static_cast<float>(getWidth());
+        io.DisplaySize.y = static_cast<float>(getHeight());
+        ImGui_ImplOpenGL3_NewFrame();//начинаем новый фрейм для отрисовки где имгуи рисует
+        ImGui::NewFrame();// кадр самого имгуи
+        ImGui::ShowDemoWindow(); // отрисовывает демо окно чтобы увидеть возможности имгуи
+        ImGui::Render();// создает данные
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());//рисует посредством опенгл
+
         swapBuffers();
         glfwPollEvents();
 }

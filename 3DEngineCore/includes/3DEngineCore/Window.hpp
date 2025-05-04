@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 
+
 namespace Engine
 {
 	class BaseEvent;
@@ -16,12 +17,15 @@ namespace Engine
 		Window(unsigned int&& width, unsigned int&& height, const char* title);
 		int createWindow();
 
+
 		 void makeContext();
 		 bool windowShouldClose();
 		 void swapBuffers();
 		 void shutDown();
 		 void on_update();
 		 void setEventCallback(EventCallback&& evCallback) {data.eventCallback = std::move(evCallback);}
+		 unsigned int getWidth() { return data.m_width; }
+		 unsigned int getHeight() { return data.m_height; }
 	private:
 		static bool is_GLFW_initialized;
 		GLFWwindow* m_window;
