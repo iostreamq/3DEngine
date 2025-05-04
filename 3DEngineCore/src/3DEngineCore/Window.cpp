@@ -1,3 +1,5 @@
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <imgui.h>
 #include "3DEngineCore/Window.hpp"
 #include "3DEngineCore/Log.hpp"
 #include "EngineEventProcessing/WindowEvents/WindowClosedEvent.hpp"
@@ -64,6 +66,9 @@ int Engine::Window::createWindow() {
         return -1;
     }
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui_ImplOpenGL3_Init();
     glClearColor(0, 1, 1, 0);
     return 0;
 }
@@ -76,6 +81,18 @@ void Engine::Window::shutDown() {
 void Engine::Window::on_update() {
 
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    ImGuiIO& io = ImGui::GetIO();
+    io.DisplaySize.x = getWidth();
+    io.DisplaySize.y = getHeight();
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui::NewFrame();
+    ImGui::ShowDemoWindow();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
     glfwSwapBuffers(m_window);
     glfwPollEvents();
     m_windowEventsDispatcher->callExecutor();

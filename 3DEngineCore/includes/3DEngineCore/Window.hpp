@@ -13,6 +13,8 @@ namespace Engine {
         int createWindow();
         void shutDown();
         void on_update();
+        const unsigned int getWidth() const  { return m_data.m_width; }
+        const unsigned int getHeight() const  { return m_data.m_height; }
          std::unique_ptr<IEventsDispatcher>& getWindowDispatcher() { return m_windowEventsDispatcher; }
 
 
