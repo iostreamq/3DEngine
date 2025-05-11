@@ -20,6 +20,8 @@ namespace Engine
         m_window = std::make_unique<Window>(std::move(window_width), std::move(window_height), title);
         m_window->createWindow();
      
+
+
         while (true)
         {
             m_window->on_update();

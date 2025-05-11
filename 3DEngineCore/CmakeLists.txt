@@ -17,12 +17,28 @@ set(ENGINE_PUBLIC_INCLUDES
 	
 	includes/EngineEventProcessing/WindowEvents/WindowClosedEvent.hpp
 	includes/EngineEventProcessing/WindowEvents/WindowResizedEvent.hpp
+	
+	includes/Renderer/Shaders/IShader.hpp
+	includes/Renderer/Shaders/ShaderProgram.hpp
+	includes/Renderer/Shaders/Shader.hpp
+	
+	includes/ResourceManagement/ShaderResourceManager.hpp
+	includes/ResourceManagement/IResourceManager.hpp
+	includes/ResourceManagement/IResourceManagementSystem.hpp
+	includes/ResourceManagement/ResourceManagementSystem.hpp
 )
 
 set(ENGINE_PRIVATE_SOURCES
 	src/3DEngineCore/Application.cpp
 	src/3DEngineCore/Window.cpp	
 	src/EngineEventProcessing/WindowEventsManager.cpp
+	
+	src/Renderer/Shaders/ShaderProgram.cpp
+	src/Renderer/Shaders/Shader.cpp
+		
+	src/ResourceManagement/ShaderResourceManager.cpp
+	src/ResourceManagement/ResourceManagementSystem.cpp
+
 )
 
 add_library(${ENGINE_PROJECT_NAME} STATIC 
@@ -42,6 +58,8 @@ target_link_libraries(${ENGINE_PROJECT_NAME} PRIVATE glad)
 target_include_directories(${ENGINE_PROJECT_NAME} PUBLIC includes)
 
 target_compile_features(${ENGINE_PROJECT_NAME} PUBLIC cxx_std_17)
+
+
 
 set(IMGUI_INCLUDES
 	../external/imgui/imgui.h

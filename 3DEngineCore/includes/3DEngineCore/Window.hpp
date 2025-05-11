@@ -1,5 +1,6 @@
 #pragma once
 #include "EngineEventProcessing/EventsDispatcher.hpp"
+#include <ResourceManagement/ResourceManagementSystem.hpp>
 #include <memory>
 #include <string>
 #include "glad/glad.h"
@@ -7,6 +8,9 @@
 
 
 namespace Engine {
+   
+    class ShaderProgram;
+
     class Window {
     public:
         Window(unsigned int width, unsigned int height, const char* title);
@@ -29,5 +33,8 @@ namespace Engine {
         static bool is_GLFW_initialized;
         GLFWwindow* m_window{ nullptr };
         std::unique_ptr<IEventsDispatcher> m_windowEventsDispatcher;
+        std::unique_ptr<IResourceManagementSystem> m_RMS_system;
+        GLuint m_vao;
+        std::shared_ptr<ShaderProgram> m_DefaultShaderProgram;
     };
 }

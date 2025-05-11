@@ -5,9 +5,24 @@
 #include "EngineEventProcessing/WindowEvents/WindowClosedEvent.hpp"
 #include "EngineEventProcessing/WindowEvents/WindowResizedEvent.hpp"
 #include "EngineEventProcessing/WindowEventsExecutor.hpp"
+#include <Renderer/Shaders/ShaderProgram.hpp>
 #include <iostream>
 
+
 bool Engine::Window::is_GLFW_initialized = false;
+class ShaderResourceManager;
+
+GLfloat point[] = {
+ 0.0f, 0.5f, 0.0f,
+ 0.5f, -0.5f, 0.0f,
+ -0.5f, -0.5f, 0.0f
+};
+
+GLfloat colors[] = {
+  1.0f, 0.0f, 0.0f,
+  0.0f, 1.0f, 0.0f,
+  0.0f, 0.0f, 1.0f
+};
 
 void windowSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -36,6 +51,8 @@ void windowCloseCallback(GLFWwindow* window)
 Engine::Window::Window(unsigned int width, unsigned int height, const char* title)
     : m_data({width, height, title})
     , m_windowEventsDispatcher(std::make_unique<EventsDispatcher>(std::make_unique<WindowEventsExecutor>()))
+    , m_RMS_system(std::make_unique<ResourceManagementSystem>())
+    , m_vao(0)
 {}
 
 int Engine::Window::createWindow() {
@@ -66,6 +83,31 @@ int Engine::Window::createWindow() {
         return -1;
     }
 
+    const std::shared_ptr<ShaderResourceManager>& ptr = m_RMS_system->getNecessaryRM<ShaderResourceManager>();
+    ptr->init("D:/3DEngine/3DEngineCore/res/shaders/");
+    m_DefaultShaderProgram = ptr->loadShaderProgram("DefaultShaderProgram", "VertexShader.txt", "FragmentShader.txt");
+
+    m_vao = 0;
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
+
+    GLuint points_vbo;
+    glGenBuffers(1, &points_vbo); // отличие от glCreateBuffers
+    glBindBuffer(GL_ARRAY_BUFFER, points_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(point), point, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    GLuint colors_vbo;
+    glGenBuffers(1, &colors_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, colors_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui_ImplOpenGL3_Init();
@@ -85,6 +127,10 @@ void Engine::Window::on_update() {
     ImGuiIO& io = ImGui::GetIO();
     io.DisplaySize.x = getWidth();
     io.DisplaySize.y = getHeight();
+
+    glBindVertexArray(m_vao);
+    m_DefaultShaderProgram->bind();
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui::NewFrame();
