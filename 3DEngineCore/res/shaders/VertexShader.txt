@@ -7,3 +7,4 @@ void main()
   frag_color = vertexColor;
   gl_Position = vec4(vertexCoords,1.0);
 }
+

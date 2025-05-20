@@ -1,7 +1,8 @@
 #pragma once
 #include <glad/glad.h>
 #include <memory>
-#include <Renderer/Shaders/Shader.hpp>
+#include <Renderer/OpenGL/Shaders/Shader.hpp>
+#include <Descriptors/RendererDesc/ShaderDesc.hpp>
 
 namespace Engine
 {
@@ -9,7 +10,7 @@ namespace Engine
 	class ShaderProgram
 	{
 	public:
-		ShaderProgram(const char* vertexStr, const char* fragmentStr);
+		ShaderProgram(const ShaderDesc& vertexDesc, const ShaderDesc& fragmentDesc);
 		~ShaderProgram();
 		bool checkCompileStatus();
 		GLuint& getId() { return m_id; }

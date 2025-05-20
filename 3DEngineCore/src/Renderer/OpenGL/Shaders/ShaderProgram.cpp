@@ -1,17 +1,17 @@
-#include <Renderer/Shaders/ShaderProgram.hpp>
+#include <Renderer/OpenGL/Shaders/ShaderProgram.hpp>
 #include <3DEngineCore/Log.hpp>
 
-Engine::ShaderProgram::ShaderProgram(const char* vertexStr, const char* fragmentStr)
+Engine::ShaderProgram::ShaderProgram(const ShaderDesc& vertexDesc, const ShaderDesc& fragmentDesc)
 	:m_vertexShader(std::make_unique<Shader>())
 	,m_fragmentShader(std::make_unique<Shader>())
 	,m_id(0)
 	,m_isCompiled(false)
 {
-	m_vertexShader->createShader(vertexStr, GL_VERTEX_SHADER);
+	m_vertexShader->createShader(vertexDesc, GL_VERTEX_SHADER);
 	if (!m_vertexShader->checkCompileStatus())
 		return;
 
-	m_fragmentShader->createShader(fragmentStr, GL_FRAGMENT_SHADER);
+	m_fragmentShader->createShader(fragmentDesc, GL_FRAGMENT_SHADER);
 	if (!m_fragmentShader->checkCompileStatus())
 		return;
 

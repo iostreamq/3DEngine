@@ -1,22 +1,15 @@
-#include <Renderer/Shaders/Shader.hpp>
+#include <Renderer/OpenGL/Shaders/Shader.hpp>
 #include <3DEngineCore/Log.hpp>
 
 namespace Engine
 {
-	void Shader::createShader(const char* strShader, GLenum shaderType)
+	void Shader::createShader(const ShaderDesc& shaderDesc, GLenum shaderType)
 	{
-		if (strShader == '\0')
-		{
-			LOG_CRIT(" {} shader`s str is empty! {}", shaderType, strShader);
-			return;
-		}
-
-		else
-		{
 			m_id = glCreateShader(shaderType);
-			glShaderSource(m_id, 1, &strShader, nullptr);
+
+			const char* src = shaderDesc.sourceCode.c_str();
+			glShaderSource(m_id, shaderDesc.AmountOfStr, &src, nullptr);
 			glCompileShader(m_id);
-		}
 	}
 
 	bool Shader::checkCompileStatus()

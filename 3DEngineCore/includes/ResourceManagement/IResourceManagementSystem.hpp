@@ -35,7 +35,7 @@ public:
 
 protected:
  std::map<ResourceManagerType, std::shared_ptr<IResourceManager>>& const get_RMS_map() { return m_mapRMS; }
- 
+  
 private:                            
 	using RMS_map = std::map<ResourceManagerType, std::shared_ptr<IResourceManager>>;
 	RMS_map m_mapRMS;

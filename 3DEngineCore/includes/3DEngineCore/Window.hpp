@@ -1,6 +1,8 @@
 #pragma once
 #include "EngineEventProcessing/EventsDispatcher.hpp"
 #include <ResourceManagement/ResourceManagementSystem.hpp>
+#include <System/FileSystem/DiskFileLoader.hpp>
+#include <Parser/JSON/ParserComposite.hpp>
 #include <memory>
 #include <string>
 #include "glad/glad.h"
@@ -36,5 +38,7 @@ namespace Engine {
         std::unique_ptr<IResourceManagementSystem> m_RMS_system;
         GLuint m_vao;
         std::shared_ptr<ShaderProgram> m_DefaultShaderProgram;
+        std::unique_ptr<IFileLoader> m_fileLoader;
+        std::unique_ptr<ParserComposite> m_parserMerging;
     };
 }

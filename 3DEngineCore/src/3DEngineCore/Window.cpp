@@ -5,7 +5,7 @@
 #include "EngineEventProcessing/WindowEvents/WindowClosedEvent.hpp"
 #include "EngineEventProcessing/WindowEvents/WindowResizedEvent.hpp"
 #include "EngineEventProcessing/WindowEventsExecutor.hpp"
-#include <Renderer/Shaders/ShaderProgram.hpp>
+#include <Renderer/OpenGL/Shaders/ShaderProgram.hpp>
 #include <iostream>
 
 
@@ -53,6 +53,10 @@ Engine::Window::Window(unsigned int width, unsigned int height, const char* titl
     , m_windowEventsDispatcher(std::make_unique<EventsDispatcher>(std::make_unique<WindowEventsExecutor>()))
     , m_RMS_system(std::make_unique<ResourceManagementSystem>())
     , m_vao(0)
+    , m_fileLoader(std::make_unique<DiskFileLoader>(
+        std::vector<std::string>{"D:/3DEngine/3DEngineCore/res/jsonResources"}
+    ))
+    , m_parserMerging(std::make_unique<ParserComposite>())
 {}
 
 int Engine::Window::createWindow() {
@@ -83,13 +87,28 @@ int Engine::Window::createWindow() {
         return -1;
     }
 
-    const std::shared_ptr<ShaderResourceManager>& ptr = m_RMS_system->getNecessaryRM<ShaderResourceManager>();
-    ptr->init("D:/3DEngine/3DEngineCore/res/shaders/");
-    m_DefaultShaderProgram = ptr->loadShaderProgram("DefaultShaderProgram", "VertexShader.txt", "FragmentShader.txt");
+        
+    const auto bytes = m_fileLoader->readBytes("/shader.json");
+    std::string jsonText(bytes.begin(), bytes.end());
+    m_parserMerging->parse<ShaderParser>(ParserComposite::ParserType::Shader, jsonText);
+
+    const auto& vertexDesc =  m_parserMerging->getNesseccaryDesc<ShaderParser,
+    std::shared_ptr<ShaderDesc>>(ParserComposite::ParserType::Shader, "vertexShader");
+    const auto& fragmentDesc = m_parserMerging->getNesseccaryDesc<ShaderParser,
+    std::shared_ptr<ShaderDesc>>(ParserComposite::ParserType::Shader, "fragmentShader");
+
+
+    const std::shared_ptr<ShaderResourceManager>& RM_shader = m_RMS_system->getNecessaryRM<ShaderResourceManager>();
+    m_DefaultShaderProgram = RM_shader->loadShaderProgram("DefaultShaderProgram",
+        *vertexDesc
+      , *fragmentDesc
+        );
 
     m_vao = 0;
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
+
+
 
     GLuint points_vbo;
     glGenBuffers(1, &points_vbo); // отличие от glCreateBuffers

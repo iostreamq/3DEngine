@@ -18,14 +18,27 @@ set(ENGINE_PUBLIC_INCLUDES
 	includes/EngineEventProcessing/WindowEvents/WindowClosedEvent.hpp
 	includes/EngineEventProcessing/WindowEvents/WindowResizedEvent.hpp
 	
-	includes/Renderer/Shaders/IShader.hpp
-	includes/Renderer/Shaders/ShaderProgram.hpp
-	includes/Renderer/Shaders/Shader.hpp
+	includes/Renderer/OpenGL/shaders/IShader.hpp
+	includes/Renderer/OpenGL/shaders/ShaderProgram.hpp
+	includes/Renderer/OpenGL/shaders/Shader.hpp
 	
 	includes/ResourceManagement/ShaderResourceManager.hpp
 	includes/ResourceManagement/IResourceManager.hpp
 	includes/ResourceManagement/IResourceManagementSystem.hpp
 	includes/ResourceManagement/ResourceManagementSystem.hpp
+	
+	includes/System/FileSystem/IFileLoader.hpp
+	includes/System/FileSystem/DiskFileLoader.hpp
+	
+	includes/Descriptors/RendererDesc/MeshDesc.hpp
+	includes/Descriptors/RendererDesc/ShaderDesc.hpp
+	includes/Descriptors/IDescriptor.hpp
+	
+	includes/Parser/JSON/IParserResource.hpp
+	includes/Parser/JSON/MeshParser.hpp
+	includes/Parser/JSON/ParserComposite.hpp
+	includes/Parser/JSON/ShaderParser.hpp
+	
 )
 
 set(ENGINE_PRIVATE_SOURCES
@@ -33,12 +46,16 @@ set(ENGINE_PRIVATE_SOURCES
 	src/3DEngineCore/Window.cpp	
 	src/EngineEventProcessing/WindowEventsManager.cpp
 	
-	src/Renderer/Shaders/ShaderProgram.cpp
-	src/Renderer/Shaders/Shader.cpp
+	src/Renderer/OpenGL/shaders/ShaderProgram.cpp
+	src/Renderer/OpenGL/shaders/Shader.cpp
 		
 	src/ResourceManagement/ShaderResourceManager.cpp
 	src/ResourceManagement/ResourceManagementSystem.cpp
+	
+	src/System/FileSystem/DiskFileLoader.cpp
 
+	src/Parser/JSON/MeshParser.cpp
+	src/Parser/JSON/ShaderParser.cpp
 )
 
 add_library(${ENGINE_PROJECT_NAME} STATIC 
@@ -86,3 +103,4 @@ target_include_directories(imgui PUBLIC ../external/imgui)
 target_include_directories(imgui PUBLIC ../external)
 target_link_libraries(imgui PRIVATE glfw glad)
 target_link_libraries(${ENGINE_PROJECT_NAME} PRIVATE imgui)
+include_directories(../external/rapidjson/include)

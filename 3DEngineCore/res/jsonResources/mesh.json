@@ -1,0 +1,32 @@
+{
+
+ "Meshes" : 
+ [
+	{
+		"name": "DefaultTriangle",
+		"VBO_vertexCoordsLayout"  : 
+		[ 
+		  {
+			"coords": [0.0, 0.5, 0.0,
+					  0.5, -0.5, 0.0,
+					  -0.5, -0.5, 0.0],
+		     
+			 "loc" : 0,
+			 "size" : 3
+		  }
+		],
+		
+		"VBO_vertexColorLayout"  : 
+	  [   	
+		{
+			"coords":   [1.0, 0.0, 0.0,
+						0.0, 1.0, 0.0, 
+						0.0, 0.0, 1.0],
+			 "loc" : 1,
+			 "size" : 3
+		}
+	  ]
+	}
+ ] 
+	
+}

@@ -1,0 +1,14 @@
+{
+    "shaders": 
+	[
+        {
+            "name": "vertexShader",
+            "PathSourceCode": "D:/3DEngine/3DEngineCore/res/shaders/VertexShader.txt"
+        },
+
+        {
+            "name": "fragmentShader",
+            "PathSourceCode": "D:/3DEngine/3DEngineCore/res/shaders/FragmentShader.txt"
+        }
+    ]
+}	

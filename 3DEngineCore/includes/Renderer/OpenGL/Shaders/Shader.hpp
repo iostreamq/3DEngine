@@ -1,12 +1,13 @@
 #pragma once
-#include <Renderer/Shaders/IShader.hpp>
+#include <Renderer/OpenGL/Shaders/IShader.hpp>
+#include <Descriptors/RendererDesc/ShaderDesc.hpp>
 
 namespace Engine
 {
 	class Shader : public IShader
 	{
 	public:
-		void createShader(const char* strShader, GLenum shaderType)  override;
+		void createShader(const ShaderDesc& shaderDesc, GLenum shaderType)  override;
 		bool checkCompileStatus() override;
 		void deleteShader() const override;
 		GLuint getId() const override { return m_id; };
